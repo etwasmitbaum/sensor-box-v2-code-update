@@ -24,7 +24,7 @@ packages:
 
 wifi:
   # Uncomment the following if you want the WiFi to be disabled on boot
-  enable_on_boot: false
+  # enable_on_boot: false
   ap:
     ap_timeout: 0s
 
