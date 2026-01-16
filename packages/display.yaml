@@ -4,7 +4,7 @@ packages:
   graphs: !include graphs.yaml
 
 psram:
-  mode: octal
+  mode: quad
   speed: 80MHz
 
 output:
@@ -26,11 +26,12 @@ display:
     dc_pin: GPIO04
     reset_pin: GPIO06
     #data_rate: 10MHz
-    transform:
+    rotation: 270
+    #transform:
       #mirror_x: true
-      mirror_y: true
+      #mirror_y: true
     #show_test_card: true
-    color_order: bgr # CHANGE THIS if your screen has colors mapped wrong
+    color_order: rgb # CHANGE THIS if your screen has colors mapped wrong
     invert_colors: false
     color_palette: 8BIT
     lambda: |-
@@ -357,5 +358,5 @@ display:
       }
 
     dimensions:
-      height: 320
-      width: 240
+      height: 240 #320
+      width: 320 #240
