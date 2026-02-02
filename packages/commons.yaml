@@ -20,9 +20,12 @@ logger:
   
 # Enable Home Assistant API and failsafe mechanisms
 api:
+  encryption:
+    key: !secret api_key
   reboot_timeout: 0s
   
 # Allow Over-The-Air updates
 ota:
 - platform: esphome
+  password: !secret ota_password
 
