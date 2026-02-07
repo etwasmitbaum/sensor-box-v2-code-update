@@ -17,47 +17,70 @@ binary_sensor:
     filters:
       - delayed_on: 10ms
       - delayed_off: 10ms
-    on_click: 
-    - min_length: 10ms
-      max_length: 350ms
-      then:
-        - lambda: |-
-            id(page_number) = (id(page_number) + 1) % id(page_count);
-            id(dbright) = 3; 
-            id(back_light).turn_on().set_brightness(1.00).perform();
-    - min_length: 750ms
-      max_length: 3000ms
-      then:
-        - lambda: |- # This will set the level of brightness
-            switch (id(dbright)) {
-              case 0: 
-                id(dbright) = 3; 
-                id(back_light).turn_on().set_brightness(1.00).perform();
-                break;
-              case 1: 
-                id(dbright) = 0; 
-                id(back_light).turn_off().perform();
-                break;
-              case 2: 
-                id(dbright) = 1; 
-                id(back_light).turn_on().set_brightness(0.05).perform(); 
-                break;
-              case 3: 
-                id(dbright) = 2; 
-                id(back_light).turn_on().set_brightness(0.33).perform(); 
-                break;
-            }
-    - min_length: 5000ms  # To permit the update of the firmware through OTA
-      max_length: 15000ms
-      then: 
-        - if:
-            condition: wifi.enabled 
-            then:
-              - wifi.disable:
-            else:
-              - wifi.enable:
-              - lambda: |-
-                  id(page_number) = 0;
+
+    on_click:
+      # Short press → cycle brightness levels
+      - min_length: 1ms
+        max_length: 490ms
+        then:
+          - lambda: |-
+              // Cycle through brightness levels: 33% → 15% → OFF → 100% → 33%
+              auto current = id(display_brightness).state;
+              if (current == 33) {
+                id(display_brightness).publish_state(15);    // 33% → 15%  ← CHANGED 5 TO 15
+              } else if (current == 15) {                    // ← CHANGED 5 TO 15
+                id(display_brightness).publish_state(0);     // 15% → OFF
+              } else if (current == 0) {
+                id(display_brightness).publish_state(100);   // OFF → 100%
+              } else {
+                id(display_brightness).publish_state(33);    // 100% or unknown → 33%
+              }
+
+      # Long press → switch page
+      - min_length: 500ms
+        max_length: 2000ms
+        then:
+          - lambda: |-
+              id(page_number) = (id(page_number) + 1) % id(page_count);
+
+      # Very long press → toggle Wi-Fi
+      - min_length: 2200ms
+        max_length: 5000ms
+        then: 
+          - if:
+              condition: wifi.enabled 
+              then:
+                - wifi.disable:
+                - lambda: |-
+                    id(wifi_status) = -1;
+              else:
+                - wifi.enable:
+                - lambda: |-
+                    id(wifi_status) = 1;
+                    id(page_number) = 0;
+          - delay: 3s
+          - lambda: |-
+              id(wifi_status) = 0;
+
+      # Ultra long press → save SGP30 baseline (manual)
+      - min_length: 5100ms
+        max_length: 7500ms
+        then:
+          - lambda: |-
+              float co2 = id(eco2_sgp30).state;
+              float voc = id(tvoc_sgp30).state;
+
+              if (co2 >= 0 && co2 <= 2000 && voc >= 0 && voc <= 400) {
+                id(sgp30_baseline_eco2) = co2;
+                id(sgp30_baseline_tvoc) = voc;
+                id(baseline_status) = 1;
+              } else {
+                id(baseline_status) = -1;
+              }
+
+          - delay: 3s
+          - lambda: |-
+              id(baseline_status) = 0;
 
 sensor:
   - platform: template
@@ -220,6 +243,7 @@ sensor:
     update_interval: 10s
 
   - platform: sgp30
+    id: sgp30_component
     i2c_id: i2c_main
     address: 0x58
     eco2:
@@ -280,3 +304,12 @@ sensor:
     pm_10_0:
       name: "PMS Particulate Matter <10.0µm Concentration"
       id: pm10_pms
+
+  - platform: template
+    id: tvoc_sgp30_capped
+    name: "SGP30 TVOC Capped"
+    lambda: |-
+      auto voc = id(tvoc_sgp30).state;
+      if (isnan(voc)) return NAN;
+      return (voc > 1000) ? 1000 : voc;
+    update_interval: 5s

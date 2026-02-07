@@ -11,3 +11,21 @@ globals:
     type: int
     restore_value: no
     initial_value: "3"
+  - id: sgp30_baseline_tvoc
+    type: int
+    restore_value: yes
+    initial_value: '0'
+  - id: sgp30_baseline_eco2
+    type: int
+    restore_value: yes
+    initial_value: '0'
+  - id: baseline_status
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: wifi_status  # Add this for WiFi status messages
+    type: int
+    restore_value: no
+    initial_value: '0'
+    # 0 = no message, 1 = WiFi enabled, -1 = WiFi disabled
+

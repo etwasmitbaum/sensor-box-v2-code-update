@@ -19,9 +19,18 @@ wifi:
       static_ip: 192.168.10.1
       gateway: 192.168.10.1
       subnet: 255.255.255.0
-  
+# Time configuration for clock
+time:
+  - platform: sntp
+    id: esptime
+    timezone: "CET-1CEST,M3.5.0,M10.5.0/3"  # Germany timezone
+    servers:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+      - 2.pool.ntp.org
+
 dashboard_import:
-  package_import_url: github://esphome/firmware/esphome-web/esp32s2.yaml@main
+  package_import_url: "github://esphome/firmware/esphome-web/esp32s2.yaml@main"
   import_full_config: true
 
 web_server:
@@ -32,4 +41,3 @@ web_server:
 
 debug:
   update_interval: 5s
-

@@ -1,28 +1,12 @@
 # My Sensor Box V2 Software Updates
 
-Some updates to the SensorBox DIY project configuration files.
+Original version see [here](https://www.printables.com/model/1079858-3d-printer-emission-sensor-array-sensorbox-v2) for more info.
 
-See [here](https://www.printables.com/model/1079858-3d-printer-emission-sensor-array-sensorbox-v2) for more info.
+My own Sensorbox with merged code of these repositories:
+https://github.com/turgu1/sensor-box-v2-code-update
+https://www.printables.com/model/1436008-3d-printer-emission-sensor-array-sensorbox-v2-code
 
-## (2025-02-24)
-
-- Another step in cleaning up the code: Using packages to separate the various chunks of code see them in the `packages` folder. This is done to simplify the coordination of changes between the sensor-box versions, and help separate the logics.
-- The main yaml files have been renamed to remove space characters in them. 
-
-## (2025-02-23)
-
-- Correction related to last ESPHome update, added `psram:` definition
-- First line adj for the temperature minus sign required place
-- MQTT support functional. You must adjust sensors' `update_interval:` as desired
-
-## (2025-02-21)
-
-- A short click selects next page to show, and also returns the screen to its maximum light.
-- Added the minus character to the fl30 font, required when the temperature is below zero.
-
-## (2025-02-19)
-
-### New code versions
+### Code versions
 
 There are now three versions of the software available here:
 
@@ -40,17 +24,11 @@ The lambda functions have been reformatted to be in line with C / C++ usage
 
 ### Button clicks management and Pages selection
 
-A new click has been added to permit page selection. There are now 3 click durations:
-
-- Short click: Between 10 and 350ms: page selection
-- Medium click: Between 750ms and 3 seconds: Screen dimming selection
-- Long click: Between 5 seconds and 15 seconds: Wifi AP Mode
-
-There are 3 pages available to access in sequence through a short click:
-
-- The Sensors page (as per the original software)
-- Graphics for the last hour (temperature, humidity, pressure, CO2, VOC)
-- Graphics for the last 24 hours
+A new click has been added to permit page selection. There are now 4 click durations:
+Brightness = 1ms - 490ms
+Switching pages = 500ms - 2000ms
+Wifi toggle = 2200ms - 5000ms
+Saving baseline = 5100ms - 7500ms
 
 ### Added Pressure of bmp280
 
@@ -63,11 +41,3 @@ To permit proper access to the temperature and humidity sensors by the graph add
 ### secrets.yaml
 
 Added `secrets.yaml` support. Please use the `secrets.yaml.example`, copy it to secrets.yaml and update it with your values.
-
-### Pictures
-
-Here are some pictures showing the current 3 pages displayed by the SensorBox:
-
-<br>
-<img src="./pictures/Page1.jpg" width="150" title="Page 1"/>&nbsp;<img src="./pictures/Page2.jpg" width="150" title="Page 2"/>&nbsp;<img src="./pictures/Page3.jpg" width="150" title="Page 3"/>
-<br>

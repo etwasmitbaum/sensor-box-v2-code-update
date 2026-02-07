@@ -14,18 +14,16 @@ esp32:
   framework:
     type: arduino
 
-# Enable logging
 logger:
   level: WARN
-  
-# Enable Home Assistant API and failsafe mechanisms
+
+# UPDATED API CONFIGURATION:
 api:
   encryption:
-    key: !secret api_key
+    key: !secret api_encryption_key
   reboot_timeout: 0s
-  
+
 # Allow Over-The-Air updates
 ota:
-- platform: esphome
-  password: !secret ota_password
-
+  - platform: esphome
+    password: !secret ota_password

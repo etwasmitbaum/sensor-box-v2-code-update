@@ -1,12 +1,280 @@
-packages:
-  fonts: !include fonts.yaml
-  colors: !include colors.yaml
-  graphs: !include graphs.yaml
+# ============================
+# Display Package for SensorBox
+# ============================
 
+# ----------------------------
+# BRIGHTNESS CONTROL
+# ----------------------------
+number:
+  - platform: template
+    id: display_brightness
+    name: "Display Brightness"
+    min_value: 0
+    max_value: 100
+    step: 1
+    initial_value: 33  # ← CHANGED FROM 50 TO 33
+    restore_value: yes
+    optimistic: true
+    on_value:
+      then:
+        - light.turn_on:
+            id: back_light
+            brightness: !lambda 'return x / 100.0;'
+
+# Set brightness immediately on boot to prevent scan lines
+esphome:
+  on_boot:
+    priority: 600
+    then:
+      - delay: 100ms  # Short delay to ensure PWM is ready
+      - light.turn_on:
+          id: back_light
+          brightness: !lambda 'return id(display_brightness).state / 100.0;'
+
+# ----------------------------
+# FONTS
+# ----------------------------
+font:
+  - file: "gfonts://Rubik@300"
+    id: font_label_14
+    size: 14
+    bpp: 4
+    glyphs: [
+      "0","1","2","3","4","5","6","7","8","9","µ","³","/","°","%","(",")","-", "_",":","."," ",A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+    ]
+  - file: "gfonts://Rubik@300"
+    id: font_label_18
+    size: 18
+    bpp: 4
+    glyphs: [
+      "0","1","2","3","4","5","6","7","8","9","µ","³","/","°","%","(",")","-", "_",":","."," ",A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+    ]
+  - file: "gfonts://Rubik@400"
+    id: font_value_30
+    size: 30
+    bpp: 4
+    glyphs: [
+      "0","1","2","3","4","5","6","7","8","9",".","-"
+    ]
+  - file: "gfonts://Orbitron"
+    id: font_heading_36
+    size: 36
+    bpp: 4
+    glyphs: ["2",A,C,F,I,O,P,V,W,a,c,e,i,l,r,s,t," ", "."]  # Added dot
+  - file: "gfonts://Rubik@300"
+    id: font_label_25
+    size: 25
+    bpp: 4
+    glyphs: [
+      "0","1","2","3","4","5","6","7","8","9","µ","³","/","°","%","(",")","-", "_",":","."," ",A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+    ]
+
+# ----------------------------
+# COLORS
+# ----------------------------
+color:
+  - id: white
+    hex: "FFFFFF"
+  - id: grey
+    hex: "AAAAAA"
+  - id: light_grey
+    hex: "CCCCCC"
+  - id: yellow
+    hex: "FFFA72"
+  - id: orange
+    hex: "FF9C32"
+  - id: red
+    hex: "FF1616"
+  - id: purple
+    hex: "FF16E0"
+  - id: blue
+    hex: "0000FF"
+  - id: green
+    hex: "00FF00"
+  - id: cyan
+    hex: "00FFFF"
+  - id: magenta
+    hex: "FF00FF"
+  - id: dim_green
+    hex: "007700"
+  - id: dim_red
+    hex: "770000"
+  - id: black
+    hex: "000000"
+
+
+# ----------------------------
+# GRAPHS
+# ----------------------------
+graph:
+  # 1h Graphs - Reduced grid density for small graphs
+  - id: temperature_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 15
+    max_value: 30
+    traces:
+      - sensor: temperature
+        line_type: SOLID
+        color: blue
+
+  - id: humidity_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 100
+    traces:
+      - sensor: humidity
+        line_type: SOLID
+        color: green
+
+  - id: pressure_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 950
+    max_value: 1050
+    traces:
+      - sensor: pres_bmp280
+        line_type: SOLID
+        color: magenta
+
+  - id: co2_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 3000
+    traces:
+      - sensor: co2_scd40
+        line_type: SOLID
+        color: cyan
+
+  - id: voc_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 3000
+    traces:
+      - sensor: tvoc_sgp30
+        line_type: SOLID
+        color: orange
+
+  - id: particles_graph
+    duration: 1h
+    x_grid: 20min
+    width: 151
+    height: 51
+    min_value: 0
+    max_value: 50
+    traces:
+      - sensor: pm1_pms
+        line_type: SOLID
+        color: red
+      - sensor: pm25_pms
+        line_type: SOLID
+        color: orange
+      - sensor: pm10_pms
+        line_type: SOLID
+        color: yellow
+
+  # 24h Graphs - Reduced grid density
+  - id: temperature_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 15
+    max_value: 30
+    traces:
+      - sensor: temperature
+        line_type: SOLID
+        color: blue
+
+  - id: humidity_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 100
+    traces:
+      - sensor: humidity
+        line_type: SOLID
+        color: green
+
+  - id: pressure_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 950
+    max_value: 1050
+    traces:
+      - sensor: pres_bmp280
+        line_type: SOLID
+        color: magenta
+
+  - id: co2_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 3000
+    traces:
+      - sensor: co2_scd40
+        line_type: SOLID
+        color: cyan
+
+  - id: voc_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 1
+    max_value: 3000
+    traces:
+      - sensor: tvoc_sgp30
+        line_type: SOLID
+        color: orange
+
+  - id: particles_graph_24h
+    duration: 24h
+    x_grid: 6h
+    width: 151
+    height: 51
+    min_value: 0
+    max_value: 50
+    traces:
+      - sensor: pm1_pms
+        line_type: SOLID
+        color: red
+      - sensor: pm25_pms
+        line_type: SOLID
+        color: orange
+      - sensor: pm10_pms
+        line_type: SOLID
+        color: yellow
+
+# ----------------------------
+# PSRAM
+# ----------------------------
 psram:
   mode: quad
   speed: 80MHz
 
+# ----------------------------
+# BACKLIGHT
+# ----------------------------
 output:
   - platform: ledc
     pin: GPIO15
@@ -18,6 +286,7 @@ light:
     name: "Display Backlight"
     id: back_light
     restore_mode: ALWAYS_ON
+    default_transition_length: 0s
 
 display:
   - platform: ili9xxx    
@@ -25,13 +294,11 @@ display:
     cs_pin: GPIO03
     dc_pin: GPIO04
     reset_pin: GPIO06
-    #data_rate: 10MHz
     rotation: 270
     #transform:
-      #mirror_x: true
-      #mirror_y: true
-    #show_test_card: true
+    #  mirror_y: true
     color_order: rgb # CHANGE THIS if your screen has colors mapped wrong
+    #show_test_card: true # uncomment this for display tests
     invert_colors: false
     color_palette: 8BIT
     lambda: |-
@@ -41,9 +308,44 @@ display:
       auto fh36 = id(font_heading_36);
       auto fl14 = id(font_label_14);
       auto fl18 = id(font_label_18);
+      auto fl25 = id(font_label_25);
 
       auto w = it.get_width();
       auto h = it.get_height();
+
+      // --- WIFI STATUS INDICATOR (ONLY ON PAGE 0) ---
+      if (id(page_number) == 0) {
+        bool wifi_connected = false;
+        #ifdef USE_WIFI
+        wifi_connected = (WiFi.status() == WL_CONNECTED);
+        #endif
+        
+        int wifi_circle_x = 6;
+        int wifi_circle_y = 16;
+        int wifi_circle_radius = 3;
+        
+        auto wifi_color = wifi_connected ? id(dim_green) : id(dim_red);
+        it.filled_circle(wifi_circle_x, wifi_circle_y, wifi_circle_radius, wifi_color);
+      }
+
+      // --- CLOCK DISPLAY (ONLY ON PAGE 0 WITH WIFI) ---
+      if (id(page_number) == 0) {
+        #ifdef USE_WIFI
+        if (WiFi.status() == WL_CONNECTED && id(esptime).now().is_valid()) {
+        #else
+        if (id(esptime).now().is_valid()) {
+        #endif
+            auto time = id(esptime).now();
+            char time_buf[6];  
+            char date_buf[11]; 
+            sprintf(time_buf, "%02d:%02d", time.hour, time.minute);
+            sprintf(date_buf, "%02d/%02d/%04d", time.day_of_month, time.month, time.year);
+            
+            it.print(w - 5, h - 25, fl25, id(white), TextAlign::BOTTOM_RIGHT, time_buf);
+            it.print(w - 5, h - 5, fl18, id(grey), TextAlign::BOTTOM_RIGHT, date_buf);
+        }
+      }
+
 
       float pressure = id(pres_bmp280).state;
 
@@ -68,10 +370,11 @@ display:
         it.graph (80, pos     , id(humidity_graph));
 
         pos += 60;
-        it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "hPa  1050"      );
-        it.printf(75, pos + 37, fl18, id(white), TextAlign::BOTTOM_RIGHT, "PRESS"    );
-        it.printf(75, pos + 53, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "950");
-        it.graph (80, pos     , id(pressure_graph));
+        // REPLACED PRESSURE WITH PARTICLES GRAPH
+        it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "µg/m³  50"      );
+        it.printf(75, pos + 37, fl18, id(white), TextAlign::BOTTOM_RIGHT, "PTCL"      );
+        it.printf(75, pos + 53, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "0"   );
+        it.graph (80, pos     , id(particles_graph));
 
         pos += 60;
         it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "ppm  3000"      );
@@ -102,10 +405,11 @@ display:
         it.graph (80, pos     , id(humidity_graph_24h));
 
         pos += 60;
-        it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "hPa  1050"      );
-        it.printf(75, pos + 37, fl18, id(white), TextAlign::BOTTOM_RIGHT, "PRESS"    );
-        it.printf(75, pos + 53, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "950");
-        it.graph (80, pos     , id(pressure_graph_24h));
+        // REPLACED PRESSURE WITH PARTICLES GRAPH
+        it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "µg/m³  50"      );
+        it.printf(75, pos + 37, fl18, id(white), TextAlign::BOTTOM_RIGHT, "PTCL"      );
+        it.printf(75, pos + 53, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "0"   );
+        it.graph (80, pos     , id(particles_graph_24h));
 
         pos += 60;
         it.printf(75, pos + 15, fl14, id(grey),  TextAlign::BOTTOM_RIGHT, "ppm  3000"      );
@@ -121,6 +425,7 @@ display:
 
       } else {
         
+        // PAGE 0 - Complete sensor display
         auto cy = 0; // current Y position
         auto ix = 0; // current X grid position
 
@@ -206,14 +511,14 @@ display:
 
         // DRAW TEMPERATURE HUMIDITY and PRESSURE
         it.printf( 75, 18, fl14, id(grey), TextAlign::BOTTOM_LEFT,  "°C"            );
-        it.printf( 75, 34, fv30, white,    TextAlign::BOTTOM_RIGHT, "%.1f", id(temperature).state    );
+        it.printf( 75, 34, fv30, id(white),    TextAlign::BOTTOM_RIGHT, "%.1f", id(temperature).state    );
 
         it.printf(125, 18, fl14, id(grey), TextAlign::BOTTOM_LEFT,  "RH"            );
         it.printf(125, 30, fl14, id(grey), TextAlign::BOTTOM_LEFT,  "%c", '%'       );
-        it.printf(125, 34, fv30, white,    TextAlign::BOTTOM_RIGHT, "%.0f", id(humidity).state     );
+        it.printf(125, 34, fv30, id(white),    TextAlign::BOTTOM_RIGHT, "%.0f", id(humidity).state     );
 
         it.printf(215, 18, fl14, id(grey), TextAlign::BOTTOM_LEFT,  "hPa"           );
-        it.printf(215, 34, fv30, white,    TextAlign::BOTTOM_RIGHT, "%.0f", pressure);
+        it.printf(215, 34, fv30, id(white),    TextAlign::BOTTOM_RIGHT, "%.0f", pressure);
 
         // PREPARE VARIABLES
         auto title = "";
@@ -232,7 +537,7 @@ display:
           unit      = "µg/m³";
           names[0]  = "PM1";
           names[1]  = "PM2.5";
-          names[2]  = "PM10"; //god C++ sucks
+          names[2]  = "PM10";
           values[0] = pm1;
           values[1] = pm25;
           values[2] = pm10;
@@ -275,7 +580,6 @@ display:
           colors[0] = co2_c;
           colors[1] = e_co2_c;
           colors[2] = s_co2_c;
-
 
           // START REUSABLE
           it.line(0,cy,w,cy,id(white));
@@ -355,6 +659,68 @@ display:
         }
 
         // END VOC & SGP4x
+      }
+
+      // --- MANUAL SGP30 BASELINE STATUS MESSAGE (MOVED TO END) ---
+      if (id(baseline_status) != 0 && id(page_number) == 0) {
+          auto msg_color = id(baseline_status) == 1 ? id(green) : id(red);
+          const char* msg_text = id(baseline_status) == 1 ? "Baseline saved" : "Baseline NOT saved";
+
+          // Determine bounding box for the text
+          int x0, y0, width, height;
+          it.get_text_bounds(
+              w/2,              // x start (centered horizontally)
+              h-50,             // y start (vertical reference)
+              msg_text,         // the text
+              fl18,             // font
+              TextAlign::CENTER,// alignment
+              &x0, &y0, &width, &height
+          );
+
+          // Add padding
+          int pad_x = 4;
+          int pad_y = 2;
+          x0 -= pad_x;
+          y0 -= pad_y;
+          width += 2*pad_x;
+          height += 2*pad_y;
+
+          // Draw black rectangle behind text
+          it.filled_rectangle(x0, y0, x0 + width, y0 + height, id(black));
+
+          // Draw the text on top
+          it.print(w/2, h-50, fl18, msg_color, TextAlign::CENTER, msg_text);
+      }
+
+      // --- WIFI STATUS MESSAGE (MOVED TO VERY END) ---
+      if (id(wifi_status) != 0 && id(page_number) == 0) {
+          auto msg_color = id(wifi_status) == 1 ? id(green) : id(red);
+          const char* msg_text = id(wifi_status) == 1 ? "WiFi enabled" : "WiFi disabled";
+
+          // Determine bounding box for the text
+          int x0, y0, width, height;
+          it.get_text_bounds(
+              w/2,              // x start (centered horizontally)
+              h-80,             // y start (above baseline message)
+              msg_text,         // the text
+              fl18,             // font
+              TextAlign::CENTER,// alignment
+              &x0, &y0, &width, &height
+          );
+
+          // Add padding
+          int pad_x = 4;
+          int pad_y = 2;
+          x0 -= pad_x;
+          y0 -= pad_y;
+          width += 2*pad_x;
+          height += 2*pad_y;
+
+          // Draw black rectangle behind text
+          it.filled_rectangle(x0, y0, x0 + width, y0 + height, id(black));
+
+          // Draw the text on top
+          it.print(w/2, h-80, fl18, msg_color, TextAlign::CENTER, msg_text);
       }
 
     dimensions:

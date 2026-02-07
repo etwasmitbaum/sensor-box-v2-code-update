@@ -1,24 +1,30 @@
 color:
   - id: white
-    hex: FFFFFF
+    hex: "FFFFFF"
   - id: grey
-    hex: AAAAAA
+    hex: "AAAAAA"
   - id: light_grey
-    hex: CCCCCC
+    hex: "CCCCCC"
   - id: yellow
-    hex: FFFA72
+    hex: "FFFA72"
   - id: orange
-    hex: FF9C32
+    hex: "FF9C32"
   - id: red
-    hex: FF1616
+    hex: "FF1616"
   - id: purple
-    hex: FF16e0
+    hex: "FF16E0"
   - id: blue
-    hex: 0000FF
+    hex: "0000FF"
   - id: green
-    hex: 00FF00
+    hex: "00FF00"
   - id: cyan
-    hex: 00FFFF
+    hex: "00FFFF"
   - id: magenta
-    hex: FF00FF
-  
+    hex: "FF00FF"
+  - id: dim_green
+    hex: "007700"
+  - id: dim_red
+    hex: "770000"
+  - id: black
+    hex: "000000"
+
