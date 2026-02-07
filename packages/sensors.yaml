@@ -308,6 +308,7 @@ sensor:
   - platform: template
     id: tvoc_sgp30_capped
     name: "SGP30 TVOC Capped"
+    unit_of_measurement: ppb
     lambda: |-
       auto voc = id(tvoc_sgp30).state;
       if (isnan(voc)) return NAN;
