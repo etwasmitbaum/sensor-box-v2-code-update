@@ -26,7 +26,7 @@ packages:
   globals: !include packages/globals.yaml
   wifi: !include packages/wifi.yaml
   sensors: !include packages/sensors.yaml
-  display: !include packages/display.yaml
   interfaces: !include packages/interfaces.yaml
+  display: !include packages/display_package.yaml
   
   mqtt: !include packages/mqtt.yaml
