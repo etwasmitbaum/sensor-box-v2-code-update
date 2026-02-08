@@ -2,6 +2,7 @@
 improv_serial:
 
 wifi:
+  id: wifi_comp
   ssid: !secret wifi_sta_ssid
   password: !secret wifi_sta_password
   reboot_timeout: 0s

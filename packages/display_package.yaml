@@ -317,7 +317,7 @@ display:
       if (id(page_number) == 0) {
         bool wifi_connected = false;
         #ifdef USE_WIFI
-        wifi_connected = (WiFi.status() == WL_CONNECTED);
+        wifi_connected = id(wifi_comp).is_connected();
         #endif
         
         int wifi_circle_x = 6;
@@ -331,7 +331,7 @@ display:
       // --- CLOCK DISPLAY (ONLY ON PAGE 0 WITH WIFI) ---
       if (id(page_number) == 0) {
         #ifdef USE_WIFI
-        if (WiFi.status() == WL_CONNECTED && id(esptime).now().is_valid()) {
+        if (id(wifi_comp).is_connected() && id(esptime).now().is_valid()) {
         #else
         if (id(esptime).now().is_valid()) {
         #endif
