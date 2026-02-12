@@ -2,24 +2,6 @@
 # Display Package for SensorBox
 # ============================
 
-# ----------------------------
-# BRIGHTNESS CONTROL
-# ----------------------------
-number:
-  - platform: template
-    id: display_brightness
-    name: "Display Brightness"
-    min_value: 0
-    max_value: 100
-    step: 1
-    initial_value: 33  # ← CHANGED FROM 50 TO 33
-    restore_value: yes
-    optimistic: true
-    on_value:
-      then:
-        - light.turn_on:
-            id: back_light
-            brightness: !lambda 'return x / 100.0;'
 
 # Set brightness immediately on boot to prevent scan lines
 esphome:
@@ -27,9 +9,7 @@ esphome:
     priority: 600
     then:
       - delay: 100ms  # Short delay to ensure PWM is ready
-      - light.turn_on:
-          id: back_light
-          brightness: !lambda 'return id(display_brightness).state / 100.0;'
+      - script.execute: set_backlight
 
 # ----------------------------
 # FONTS
@@ -289,7 +269,7 @@ light:
     default_transition_length: 0s
 
 display:
-  - platform: ili9xxx    
+  - platform: ili9xxx
     model: ILI9341
     cs_pin: GPIO03
     dc_pin: GPIO04
@@ -319,11 +299,11 @@ display:
         #ifdef USE_WIFI
         wifi_connected = id(wifi_comp).is_connected();
         #endif
-        
+
         int wifi_circle_x = 6;
         int wifi_circle_y = 16;
         int wifi_circle_radius = 3;
-        
+
         auto wifi_color = wifi_connected ? id(dim_green) : id(dim_red);
         it.filled_circle(wifi_circle_x, wifi_circle_y, wifi_circle_radius, wifi_color);
       }
@@ -336,11 +316,11 @@ display:
         if (id(esptime).now().is_valid()) {
         #endif
             auto time = id(esptime).now();
-            char time_buf[6];  
-            char date_buf[11]; 
+            char time_buf[6];
+            char date_buf[11];
             sprintf(time_buf, "%02d:%02d", time.hour, time.minute);
             sprintf(date_buf, "%02d/%02d/%04d", time.day_of_month, time.month, time.year);
-            
+
             it.print(w - 5, h - 25, fl25, id(white), TextAlign::BOTTOM_RIGHT, time_buf);
             it.print(w - 5, h - 5, fl18, id(grey), TextAlign::BOTTOM_RIGHT, date_buf);
         }
@@ -352,7 +332,7 @@ display:
       if (isnan(pressure)) {
         pressure = 0;
       }
-    
+
       if (id(page_number) == 1) {
 
         it.printf(w - 10, 0, fl14, id(white),  TextAlign::TOP_RIGHT, "LAST HOUR"     );
@@ -424,14 +404,14 @@ display:
         it.graph (80, pos     , id(voc_graph_24h));
 
       } else {
-        
+
         // PAGE 0 - Complete sensor display
         auto cy = 0; // current Y position
         auto ix = 0; // current X grid position
 
         // GET SENSOR STATES
         auto col     = id(white);
-        
+
         auto co2     = id(co2_scd40).state;
         auto e_co2   = id(eco2_ens160).state;
         auto s_co2   = id(eco2_sgp30).state;
@@ -445,7 +425,7 @@ display:
         auto aqi_nox = id(aqi_nox_sgp41).state;
 
         // SET COLOR FOR EACH READING
-        
+
         col = id(white);
         if (co2 >  800) { col = id(yellow); }
         if (co2 > 1200) { col = id(orange); }
@@ -559,7 +539,7 @@ display:
             ix++;
           }
           // END REUSABLE
-          
+
           cy += 88;
         }
 

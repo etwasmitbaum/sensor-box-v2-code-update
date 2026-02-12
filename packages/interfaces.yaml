@@ -6,16 +6,16 @@ uart:
     parity: none
     data_bits: 8
     stop_bits: 1
-    debug: 
+    debug:
       direction: BOTH
       dummy_receiver: true
       after:
-        # bytes: 9 
+        # bytes: 9
         timeout: 10ms
       sequence:
         lambda: |-
           ESP_LOGD("custom", "Bytes size: %d", bytes.size());
-          // UARTDebug::log_int(direction, bytes, ',');             // Log the message as int. 
+          // UARTDebug::log_int(direction, bytes, ',');             // Log the message as int.
           // UARTDebug::log_hex(direction, bytes, ',');             // Log the message in hex.
           if (direction == UART_DIRECTION_RX) {
             if (bytes.size() == 9) {

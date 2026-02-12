@@ -2,7 +2,7 @@ globals:
   - id: dbright # Display dimming brightness
     type: int
     restore_value: no
-    initial_value: "0"
+    initial_value: "2" # 33%
   - id: page_number # current page number (0 = first page)
     type: int
     restore_value: no
@@ -29,3 +29,36 @@ globals:
     initial_value: '0'
     # 0 = no message, 1 = WiFi enabled, -1 = WiFi disabled
 
+script:
+  - id: cycle_backlight
+    mode: restart
+    then:
+      - lambda: |-
+          // Cycle through brightness levels: 33% → 15% → OFF → 100% → 33%
+          switch (id(dbright)) {
+            case 0: id(dbright) = 3; break;
+            case 1: id(dbright) = 0; break;
+            case 2: id(dbright) = 1; break;
+            case 3: id(dbright) = 2; break;
+          }
+
+      - script.execute: set_backlight
+
+  - id: set_backlight
+    mode: restart
+    then:
+      - if:
+          condition:
+            lambda: 'return id(dbright) == 0;'
+          then:
+            - light.turn_off: back_light
+          else:
+            - light.turn_on:
+                id: back_light
+                brightness: !lambda |-
+                  switch (id(dbright)) {
+                    case 1: return 0.15;
+                    case 2: return 0.33;
+                    case 3: return 1.0;
+                    default: return 0.33;
+                  }

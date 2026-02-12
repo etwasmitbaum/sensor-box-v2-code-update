@@ -29,7 +29,7 @@ wifi:
     ap_timeout: 0s
 
 esphome:
-  on_boot: 
+  on_boot:
     then:
       - delay: 30s
       - wifi.disable:

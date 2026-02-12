@@ -28,5 +28,5 @@ packages:
   sensors: !include packages/sensors.yaml
   interfaces: !include packages/interfaces.yaml
   display: !include packages/display_package.yaml
-  
+
   mqtt: !include packages/mqtt.yaml

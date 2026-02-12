@@ -14,7 +14,7 @@ There are now three versions of the software available here:
 - The Home Assistant Version (`sensor-box ha.yaml`)
 - The MQTT Version (`sensor-box mqtt.yaml`)
 
-Please note that the MQTT Version is not ready yet. 
+Please note that the MQTT Version is not ready yet.
 
 ## (2025-02-17)
 

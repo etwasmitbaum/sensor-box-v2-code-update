@@ -5,3 +5,4 @@
 /secrets.yaml
 packages/secrets.yaml
 test-mqtt
+.editorconfig

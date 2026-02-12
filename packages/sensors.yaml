@@ -19,36 +19,31 @@ binary_sensor:
       - delayed_off: 10ms
 
     on_click:
-      # Short press → cycle brightness levels
+      # Short press → switch page
       - min_length: 1ms
         max_length: 490ms
         then:
           - lambda: |-
-              // Cycle through brightness levels: 33% → 15% → OFF → 100% → 33%
-              auto current = id(display_brightness).state;
-              if (current == 33) {
-                id(display_brightness).publish_state(15);    // 33% → 15%  ← CHANGED 5 TO 15
-              } else if (current == 15) {                    // ← CHANGED 5 TO 15
-                id(display_brightness).publish_state(0);     // 15% → OFF
-              } else if (current == 0) {
-                id(display_brightness).publish_state(100);   // OFF → 100%
-              } else {
-                id(display_brightness).publish_state(33);    // 100% or unknown → 33%
+              if (id(back_light).current_values.is_on()) {
+                id(page_number) = (id(page_number) + 1) % id(page_count);
+              }
+              else {
+                id(dbright) = 3;
+                id(back_light).turn_on().set_brightness(1.00).perform();
               }
 
-      # Long press → switch page
+      # Long press → cycle brightness levels
       - min_length: 500ms
         max_length: 2000ms
         then:
-          - lambda: |-
-              id(page_number) = (id(page_number) + 1) % id(page_count);
+          - script.execute: cycle_backlight
 
       # Very long press → toggle Wi-Fi
       - min_length: 2200ms
         max_length: 5000ms
-        then: 
+        then:
           - if:
-              condition: wifi.enabled 
+              condition: wifi.enabled
               then:
                 - wifi.disable:
                 - lambda: |-
@@ -91,17 +86,17 @@ sensor:
     unit_of_measurement: "°C"
     update_interval: 10s
     lambda: |-
-      float temps[6] = { 
-        id(temp_sht40).state, 
-        id(temp_aht20).state, 
-        id(temp_scd40).state, 
-        id(temp_aht20_ens).state, 
+      float temps[6] = {
+        id(temp_sht40).state,
+        id(temp_aht20).state,
+        id(temp_scd40).state,
+        id(temp_aht20_ens).state,
         id(temp_bmp280).state,
       };
 
       for (int i = 0; i < 5; i++) {
-        if (!isnan(temps[i])) { 
-          return temps[i]; 
+        if (!isnan(temps[i])) {
+          return temps[i];
         }
       }
       return 0.0;
@@ -114,16 +109,16 @@ sensor:
     unit_of_measurement: "%"
     update_interval: 10s
     lambda: |-
-      float hums[4] = { 
-        id(hum_sht40).state, 
-        id(hum_aht20).state, 
-        id(hum_scd40).state, 
-        id(hum_aht20_ens).state, 
+      float hums[4] = {
+        id(hum_sht40).state,
+        id(hum_aht20).state,
+        id(hum_scd40).state,
+        id(hum_aht20_ens).state,
       };
 
       for (int i = 0; i < 4; i++) {
-        if (!isnan(hums[i])) { 
-          return hums[i]; 
+        if (!isnan(hums[i])) {
+          return hums[i];
         }
       }
 
@@ -136,9 +131,9 @@ sensor:
     device_class: volatile_organic_compounds
     id: ch2o_ze08
     update_interval: 5s
-    filters: 
+    filters:
       - filter_out: 2000.0
-      - exponential_moving_average: 
+      - exponential_moving_average:
           send_every: 1
           alpha: 0.5
 
@@ -216,8 +211,8 @@ sensor:
     tvoc:
       name: "ENS160 TVOC"
       id: tvoc_ens160
-      filters: 
-        - exponential_moving_average: 
+      filters:
+        - exponential_moving_average:
             send_every: 1
             alpha: 0.5
     aqi:
@@ -250,21 +245,21 @@ sensor:
       name: "SGP30 eCO2"
       id: eco2_sgp30
       accuracy_decimals: 0
-      filters: 
-        - exponential_moving_average: 
+      filters:
+        - exponential_moving_average:
             send_every: 1
             alpha: 0.2
     tvoc:
       name: "SGP30 TVOC"
       id: tvoc_sgp30
       accuracy_decimals: 1
-      filters: 
-        - exponential_moving_average: 
+      filters:
+        - exponential_moving_average:
             send_every: 1
             alpha: 0.2
     store_baseline: yes
     update_interval: 5s
-    compensation: 
+    compensation:
       humidity_source: hum_aht20
       temperature_source: temp_aht20
 
@@ -285,14 +280,14 @@ sensor:
       device_class: aqi
       state_class: measurement
       unit_of_measurement: "index points"
-    compensation: 
+    compensation:
       humidity_source: hum_aht20
       temperature_source: temp_aht20
     store_baseline: True
     update_interval: 10s
 
   - platform: pmsx003
-    type: PMSX003 
+    type: PMSX003
     update_interval: 120s
     uart_id: uart_pms
     pm_1_0:
