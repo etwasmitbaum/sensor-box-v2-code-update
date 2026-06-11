@@ -10,9 +10,10 @@ https://www.printables.com/model/1436008-3d-printer-emission-sensor-array-sensor
 
 There are now three versions of the software available here:
 
-- The Standalone Version (`sensor-box standalone.yaml`)
-- The Home Assistant Version (`sensor-box ha.yaml`)
-- The MQTT Version (`sensor-box mqtt.yaml`)
+- The Standalone Version (`sensor-box-standalone.yaml`)
+- The Home Assistant Version (`sensor-box-ha.yaml`)
+- The Home Assistant Version for ESPHome Builder (`sensor-box-ha-builder.yaml`)
+- The MQTT Version (`sensor-box-mqtt.yaml`)
 
 Please note that the MQTT Version is not ready yet.
 
