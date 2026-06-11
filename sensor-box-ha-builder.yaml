@@ -1,0 +1,35 @@
+# Sensorbox V2 HA
+#
+# This is a configuration for the Sensorbox V2 PCB to be integrated in Home Assistant.
+#
+# The configuration is based on the Sensorbox V2 PCB SBR1.
+# The PCB is available at https://go.toms3d.org/sbr1
+#
+# See the README.md file for more information.
+#
+# Guy Turcotte
+# 2021-02-24
+
+substitutions:
+  name: sensorbox-2
+  friendly_name: "Sensorbox V2 HA"
+
+  api_encryption_key: !secret api_encryption_key
+  ota_password: !secret ota_password
+
+  web_user: !secret web_user
+  web_password: !secret web_password
+  
+  # WiFi AP mode (HotSpot)
+  wifi_ap_ssid: !secret wifi_ap_ssid
+  wifi_ap_password: !secret wifi_ap_password
+
+  # WiFi Station mode (Router)
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+packages:
+  
+  remote_package_files:
+    url: https://github.com/fz72/sensor-box-v2-code-update
+    files: [packages/commons.yaml, packages/globals.yaml, packages/wifi.yaml, packages/sensors.yaml, packages/display_package.yaml, packages/interfaces.yaml]
