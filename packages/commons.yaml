@@ -20,11 +20,11 @@ logger:
 # UPDATED API CONFIGURATION:
 api:
   encryption:
-    key: !secret api_encryption_key
+    key: ${api_encryption_key}
   reboot_timeout: 0s
 
 # Allow Over-The-Air updates
 ota:
   - platform: esphome
     id: my_ota
-    password: !secret ota_password
+    password: ${ota_password}

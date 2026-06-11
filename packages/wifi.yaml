@@ -3,8 +3,8 @@ improv_serial:
 
 wifi:
   id: wifi_comp
-  ssid: !secret wifi_sta_ssid
-  password: !secret wifi_sta_password
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
   reboot_timeout: 0s
 
   # Set minimum WiFi security - reject connections to networks with weaker security
@@ -12,8 +12,8 @@ wifi:
   min_auth_mode: WPA2  # Or WPA3 for ESP32 if all your networks support it
 
   ap:
-    ssid: !secret wifi_ap_ssid
-    password: !secret wifi_ap_password
+    ssid: ${wifi_ap_ssid}
+    password: ${wifi_ap_password}
     ap_timeout: 10s
 
     manual_ip:
@@ -37,8 +37,8 @@ dashboard_import:
 web_server:
   port: 80
   auth:
-    username: !secret web_user
-    password: !secret web_password
+    username: ${web_user}
+    password: ${web_password}
 
 debug:
   update_interval: 5s
