@@ -33,3 +33,4 @@ packages:
   remote_package_files:
     url: https://github.com/fz72/sensor-box-v2-code-update
     files: [packages/commons.yaml, packages/globals.yaml, packages/wifi.yaml, packages/sensors.yaml, packages/display_package.yaml, packages/interfaces.yaml]
+    refresh: 1d
