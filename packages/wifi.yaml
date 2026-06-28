@@ -23,12 +23,12 @@ wifi:
 # Time configuration for clock
 time:
   - platform: sntp
-    id: esptime
-    timezone: "CET-1CEST,M3.5.0,M10.5.0/3"  # Germany timezone
+    id: sntp_time
+    timezone: Europe/Berlin
     servers:
-      - 0.pool.ntp.org
-      - 1.pool.ntp.org
-      - 2.pool.ntp.org
+      - 88.198.7.62
+      - 176.9.8.206
+      - 195.201.173.232
 
 dashboard_import:
   package_import_url: "github://esphome/firmware/esphome-web/esp32s2.yaml@main"

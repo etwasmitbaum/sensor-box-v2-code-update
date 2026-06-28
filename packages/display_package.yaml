@@ -311,11 +311,11 @@ display:
       // --- CLOCK DISPLAY (ONLY ON PAGE 0 WITH WIFI) ---
       if (id(page_number) == 0) {
         #ifdef USE_WIFI
-        if (id(wifi_comp).is_connected() && id(esptime).now().is_valid()) {
+        if (id(wifi_comp).is_connected() && id(sntp_time).now().is_valid()) {
         #else
-        if (id(esptime).now().is_valid()) {
+        if (id(sntp_time).now().is_valid()) {
         #endif
-            auto time = id(esptime).now();
+            auto time = id(sntp_time).now();
             char time_buf[6];
             char date_buf[11];
             sprintf(time_buf, "%02d:%02d", time.hour, time.minute);
