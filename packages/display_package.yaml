@@ -269,18 +269,20 @@ light:
     default_transition_length: 0s
 
 display:
-  - platform: ili9xxx
+  - platform: mipi_spi
     model: ILI9341
     cs_pin: GPIO03
     dc_pin: GPIO04
     reset_pin: GPIO06
     rotation: 270
-    #transform:
-    #  mirror_y: true
+    transform:
+      swap_xy: true
+      mirror_x: false
+      mirror_y: false
     color_order: rgb # CHANGE THIS if your screen has colors mapped wrong
     #show_test_card: true # uncomment this for display tests
     invert_colors: false
-    color_palette: 8BIT
+    color_depth: 8BIT
     lambda: |-
       it.fill(Color::BLACK);
 
@@ -706,3 +708,7 @@ display:
     dimensions:
       height: 240 #320
       width: 320 #240
+      offset_width: 0   
+      offset_height: 0  
+      pad_width: 0      
+      pad_height: 0
